@@ -1,0 +1,1 @@
+# HardcipherCRM_core
