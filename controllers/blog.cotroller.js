@@ -138,7 +138,7 @@ exports.get_blog = async (req, res) => {
 //fetch all blogs
 exports.get_blogs_list = async (req, res) => {
   try {
-    let website_found = await website_model.findOne({web_id:req.body.web_id});
+    let website_found = await website_model.findOne({web_id:req.params.web_id});
     if (!website_found) {
       return res
         .status(400)

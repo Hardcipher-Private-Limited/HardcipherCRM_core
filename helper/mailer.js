@@ -18,9 +18,7 @@ exports.send_mail = async (req, res) => {
       subject: subject,
       text: text,
        html:'<p>Hello, this is a test email from Node.js</p><img src="https://your-image-pixel-url.com" width="1" height="1">'
-      // <img src="https://hardcipher.in/tracking/pixel.png?id=${trackingId}" alt="">"
-
-    };
+     };
 
     // transporter
     // .sendMail(message)

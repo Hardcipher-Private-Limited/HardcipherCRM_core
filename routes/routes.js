@@ -15,7 +15,7 @@ router.post("/add_blog/",blog_controller.add_blog)
 router.delete("/delete_blog/:web_id/:id",blog_controller.delete_blog)
 router.get("/get_blog_by_id/:web_id/:id",blog_controller.get_blog)
 router.put("/update_blog/:id",blog_controller.update_blog)
-router.get("/get_blogs_list",blog_controller.get_blogs_list)
+router.get("/get_blogs_list/:web_id",blog_controller.get_blogs_list)
 
 //mailer route
 router.post("/send_mail",mailer.send_mail)
