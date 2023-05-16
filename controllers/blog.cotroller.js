@@ -2,10 +2,6 @@ const { json } = require("body-parser");
 const website_model = require("../models/website.model");
 const validator = require("express-validator");
 
-
-
-const multer = require("multer");
-
 //add blog
 exports.add_blog = async (req, res) => {
   try {
@@ -17,13 +13,12 @@ exports.add_blog = async (req, res) => {
         .json({ status: false, message: "validation error", error: errors });
     }
     // check website in DB
-    let website_found = await website_model.findOne({id:req.body.id});
+    let website_found = await website_model.findOne({ id: req.body.id });
     if (!website_found) {
       return res
         .status(400)
         .json({ status: false, message: "website not found" });
     }
-
 
     //push blog in website
     website_found.blogs.push(req.body);
@@ -48,8 +43,8 @@ exports.update_blog = async (req, res) => {
         .json({ status: false, message: "validation error", error: errors });
     }
     //update blog data in website
-    
-    let website_found = await website_model.findOne({id:req.body.id});
+
+    let website_found = await website_model.findOne({ id: req.body.id });
     if (!website_found) {
       return res
         .status(400)
@@ -59,8 +54,8 @@ exports.update_blog = async (req, res) => {
     let blog_index = website_found.blogs.findIndex(
       (blog) => blog._id.toString() === req.params.id
     );
-    console.log("59 line",blog_index)
-    
+    console.log("59 line", blog_index);
+
     if (blog_index == -1) {
       return res.status(400).json({ status: false, message: "blog not found" });
     }
@@ -81,7 +76,9 @@ exports.update_blog = async (req, res) => {
 //delete blog
 exports.delete_blog = async (req, res) => {
   try {
-    let website_found = await website_model.findOne({web_id:req.params.web_id});
+    let website_found = await website_model.findOne({
+      web_id: req.params.web_id,
+    });
     if (!website_found) {
       return res
         .status(400)
@@ -92,9 +89,7 @@ exports.delete_blog = async (req, res) => {
       (blog) => blog._id.toString() === req.params.id
     );
     if (blog_index == -1) {
-      return res
-            .status(400)
-            .json({ status: false, message: "blog not found" });
+      return res.status(400).json({ status: false, message: "blog not found" });
     }
     let blog_deleted = website_found.blogs.splice(blog_index, 1);
     await website_found.save();
@@ -113,7 +108,9 @@ exports.delete_blog = async (req, res) => {
 exports.get_blog = async (req, res) => {
   try {
     //fetch blog
-    let website_found = await website_model.findOne({web_id:req.params.web_id});
+    let website_found = await website_model.findOne({
+      web_id: req.params.web_id,
+    });
     if (!website_found) {
       return res
         .status(400)
@@ -138,7 +135,9 @@ exports.get_blog = async (req, res) => {
 //fetch all blogs
 exports.get_blogs_list = async (req, res) => {
   try {
-    let website_found = await website_model.findOne({web_id:req.params.web_id});
+    let website_found = await website_model.findOne({
+      web_id: req.params.web_id,
+    });
     if (!website_found) {
       return res
         .status(400)

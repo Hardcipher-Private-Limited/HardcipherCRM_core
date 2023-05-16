@@ -30,15 +30,57 @@ exports.add_newsletter = async (req, res) => {
         .json({ status: false, message: "Newsletter already subscribed" });
     }
   }
-  website_found.newsletter.push(req.body);
+
+  website_found.newsletter.push({ email: req.body.email, status: true });
   await website_found.save();
-  res
-    .status(200)
-    .json({
-      status: true,
-      message: "newsletter added",
-      data: website_found.newsletter,
+  res.status(200).json({
+    status: true,
+    message: "newsletter added",
+    data: website_found.newsletter,
+  });
+};
+
+//unsubscribe
+exports.unsubscribe_newsletter = async (req, res) => {
+  try {
+    let website_found = await website_model.findOne({
+      web_id: req.params.web_id,
     });
+    console.log(website_found);
+    if (!website_found) {
+      return res
+        .status(404)
+        .json({ status: false, message: "website not found" });
+    }
+    let index = website_found.newsletter.findIndex(
+      (index) => index._id.toString() === req.query.id
+    );
+    console.log(index);
+    if (index === -1) {
+      return res
+        .status(404)
+        .json({ status: false, message: "newsletter not found" });
+    }
+
+  //   let update_newsletter=await website_model.findOneAndUpdate({
+  //     web_id: req.body.web_id,
+  //   }, {$set:{'website_found.newsletter.status':false}}  ,{new:true})
+  //  console.log("line 68----",update_newsletter)
+  
+    website_found.newsletter[index].status = false;
+    await website_found.save();
+    res.status(200).json({
+      status: true,
+      message: "newsletter unsubscribed",
+      data: website_found.newsletter[index],
+    });
+  } catch (err) {
+    res.status(500).json({
+      status: false,
+      message: "newsletter not unsubscribed",
+      error: err.message,
+    });
+  }
 };
 
 //get newsletter
@@ -57,21 +99,17 @@ exports.get_newsletter = async (req, res) => {
       (index) => index._id.toString() === req.params.id
     );
     console.log(index);
-    res
-      .status(200)
-      .json({
-        status: true,
-        message: "newsletter found",
-        data: website_found.newsletter[index],
-      });
+    res.status(200).json({
+      status: true,
+      message: "newsletter found",
+      data: website_found.newsletter[index],
+    });
   } catch (err) {
-    res
-      .status(500)
-      .json({
-        status: false,
-        message: "newsletter not found",
-        error: err.message,
-      });
+    res.status(500).json({
+      status: false,
+      message: "newsletter not found",
+      error: err.message,
+    });
   }
 };
 
@@ -102,11 +140,11 @@ exports.update_newsletter = async (req, res) => {
   }
   website_found.newsletter[index].email = req.body.email;
   await website_found.save();
-  res
-    .status(200)
-    .json({
-      status: true,
-      message: "newsletter updated",
-      data: website_found.newsletter[index],
-    });
+  res.status(200).json({
+    status: true,
+    message: "newsletter updated",
+    data: website_found.newsletter[index],
+  });
 };
+
+//unsubscribe newsletter API

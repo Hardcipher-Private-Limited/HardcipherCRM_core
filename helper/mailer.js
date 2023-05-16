@@ -17,12 +17,8 @@ exports.send_mail = async (req, res) => {
       bcc: bcc,
       subject: subject,
       text: text,
-       html:'<p>Hello, this is a test email from Node.js</p><img src="https://your-image-pixel-url.com" width="1" height="1">'
+       html:html
      };
-
-    // transporter
-    // .sendMail(message)
-    // .then(() => res.status(200).send({status:true,msg:"Email sent successfully"}))
 
     transporter.sendMail(message, function (err, info) {
       if (err) {
