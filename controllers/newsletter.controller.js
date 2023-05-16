@@ -61,12 +61,6 @@ exports.unsubscribe_newsletter = async (req, res) => {
         .status(404)
         .json({ status: false, message: "newsletter not found" });
     }
-
-  //   let update_newsletter=await website_model.findOneAndUpdate({
-  //     web_id: req.body.web_id,
-  //   }, {$set:{'website_found.newsletter.status':false}}  ,{new:true})
-  //  console.log("line 68----",update_newsletter)
-  
     website_found.newsletter[index].status = false;
     await website_found.save();
     res.status(200).json({
@@ -147,4 +141,3 @@ exports.update_newsletter = async (req, res) => {
   });
 };
 
-//unsubscribe newsletter API
