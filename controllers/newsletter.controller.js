@@ -140,4 +140,3 @@ exports.update_newsletter = async (req, res) => {
     data: website_found.newsletter[index],
   });
 };
-

@@ -10,7 +10,8 @@ const websiteSchema = new Schema(
     },
     website_name: { type: String, required: true, unique: true },
     domain_name: { type: String, required: true, unique: true },
-    in_company: { type: Boolean, required: false, default: true },
+    in_company: { type: Boolean, required: true },
+    brand_id:{type:Object},
     pages: [
       {
         name: { type: String, required: false },
