@@ -64,6 +64,7 @@ router.put("/update_career/:id", career_controller.update_career)
 
 //user routes
 router.post("/register_user", user_controller.register_user)
+router.post("/login_user", user_controller.login_user)
 router.put('/update_user/:empId', user_controller.update_user)
 router.get('/get_user/:empId', user_controller.get_user_by_id)
 router.get("/get_user_list", user_controller.get_all_user)

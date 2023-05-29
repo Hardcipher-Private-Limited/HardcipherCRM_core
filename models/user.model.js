@@ -12,13 +12,25 @@ const userSchema = new mongoose.Schema(
         `HCEI${new Date()
           .getFullYear()
           .toString()
-          .slice(2)}${new Date().getDate()}${
-          new Date().getMonth() + 1
+          .slice(2)}${new Date().getDate()}${new Date().getMonth() + 1
         }${utility.generateSerialNumber()}`,
       unique: true,
     },
     emp_name: { type: String, required: true },
+    user_type: {
+      type: String,
+      required: true,
+      enum: [
+        "Director", 
+        "Manager", 
+        "Executive", 
+        "Junior Executive",
+         "Intern"
+        ],
+      default: "user",
+    },
     personal_email: { type: String, required: true, unique: false },
+    password: { type: String, required: true },
     official_email: { type: String, required: false },
     joining_date: { type: Date, required: true },
     designation: { type: String, required: false },

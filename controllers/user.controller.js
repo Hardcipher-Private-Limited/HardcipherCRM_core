@@ -1,6 +1,11 @@
 const user_model = require("../models/user.model");
 const validator = require("express-validator");
+const bcrypt = require('bcrypt')
+const JWT = require('jsonwebtoken')
+const dotenv = require("dotenv");
+dotenv.config();
 const utility = require("../helper/utility");
+
 
 exports.register_user = async (req, res) => {
   try {
@@ -11,15 +16,17 @@ exports.register_user = async (req, res) => {
         .json({ status: false, message: "validation error", error: error });
     }
 
-    let personal_email_found = await user_model.findOne({ personal_email: req.body.personal_email })
-    if (personal_email_found) {
-      return res.status(400).json({ status: false, message: "personal email already exist" })
-    }
-
-    // create user
+    // let personal_email_found = await user_model.findOne({ personal_email: req.body.personal_email })
+    // if (personal_email_found) {
+    //   return res.status(400).json({ status: false, message: "personal email already exist" })
+    // }
+    //hashing password
+    const salt = await bcrypt.genSalt(10);
+    const hashed_password = await bcrypt.hash(req.body.password, salt);
     const user = new user_model({
       emp_name: req.body.emp_name,
       personal_email: req.body.personal_email,
+      password: hashed_password,
       official_email: req.body.official_email,
       joining_date: req.body.joining_date,
       designation: req.body.designation,
@@ -41,6 +48,73 @@ exports.register_user = async (req, res) => {
       .json({ status: false, message: "user not added", error: err.message });
   }
 };
+
+//create login
+exports.login_user = async (req, res) => {
+  try {
+    const error = validator.validationResult(req);
+    if (!error.isEmpty()) {
+
+      res
+        .status(400)
+        .json({ status: false, message: "validation error", error: error });
+    }
+    //check if user exist
+    let user_found = await user_model.findOne({
+      personal_email: req.body.personal_email,
+    });
+    console.log("line  66---",user_found)
+    if (!user_found) {
+      return res
+        .status(400)
+        .json({ status: false, message: "user not found" });
+    }
+
+    console.log("line  73---",req.body.password,user_found.password)
+    //check password
+    const valid_password = await bcrypt.compare(
+      req.body.password,
+      user_found.password
+    );
+    console.log("line 79----",valid_password)
+    if (!valid_password) {
+      return res
+        .status(400)
+        .json({ status: false, message: "invalid password" });
+    }
+    //Generated JWT token with Payload and secret.
+  
+    const jwtPayload = {
+      id: user_found._id.toString(),
+      role: user_found.role,
+      emp_name: user_found.emp_name,
+    }
+    //create jwt token and send to bearer token in authorization
+    //iat: Math.floor(Date.now() / 1000) 
+    const token = JWT.sign(
+      jwtPayload,
+      process.env.JWT_SECRET,
+      { expiresIn: process.env.JWT_EXPIRE_TIME 
+      }
+
+    )
+    //send jwt token in authorization
+    res.setHeader('authorization', token)
+    res.status(200).json({ status: true, message: "login success", data: { token: token } });
+
+    
+
+
+  } catch (err) {
+    res
+      .status(500)
+      .json({ status: false, message: "user not logged in", error: err.message });
+  }
+};
+
+
+
+
 
 
 
